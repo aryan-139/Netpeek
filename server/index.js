@@ -4,11 +4,16 @@ const cors = require('cors');
 const morgan=require('morgan');
 const helmet=require('helmet');
 const NetworkSpeed = require('network-speed');
+const ip=require('ip');
+const ping=require('ping');
+
 
 
 const app = new Express();
 
 
+const deviceIp=ip.address();
+console.log(deviceIp);
 const testNetworkSpeed = new NetworkSpeed();
 
 getNetworkDownloadSpeed();
