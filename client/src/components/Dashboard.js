@@ -50,88 +50,188 @@ const Dashboard = () => {
   
   
 
-  useEffect(() => {   
-    const ctx = document.getElementById('uploadChart').getContext('2d');
-    const dsc=document.getElementById('downloadChart').getContext('2d');
-    const chartUploadData = {
-      labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
-      datasets: [{
-        label: 'Incoming Upload Speed (in MBPS)',
-        data: speed.uploadSpeedInstance,
-        borderColor: 'rgba(104,138,255,255)',
-        borderWidth: 2, 
-        pointRadius: 5, 
-        pointHoverRadius: 10,
-        pointHoverBackgroundColor: 'rgba(104,138,255,255)',
-        fill: true,
-        backgroundColor: 'rgba(104,138,255,255)',
-      }]
-    };
-    const chartDownloadData = {
-      labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
-      datasets: [{
-        label: 'Incoming Download Speed (in MBPS)',
-        data: speed.downloadSpeedInstance,
-        borderColor: 'rgba(104,138,255,255)',
-        borderWidth: 2, 
-        pointRadius: 5, 
-        pointHoverRadius: 10,
-        pointHoverBackgroundColor: 'rgba(104,138,255,255)',
-        fill: true,
-        backgroundColor: 'rgba(104,138,255,255)',
-      }]
-    };
-    const chartOptions = {
-      scales: {
-        x: {
-          type: 'category',
-          position: 'bottom',
-          grid: {
-            display: false,
-            color: '#FFFFF7',
-          },
+  // useEffect(() => {   
+  //   const ctx = document.getElementById('uploadChart').getContext('2d');
+  //   const dsc=document.getElementById('downloadChart').getContext('2d');
+  //   const chartUploadData = {
+  //     labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
+  //     datasets: [{
+  //       label: 'Incoming Upload Speed (in MBPS)',
+  //       data: speed.uploadSpeedInstance,
+  //       borderColor: 'rgba(104,138,255,255)',
+  //       borderWidth: 2, 
+  //       pointRadius: 5, 
+  //       pointHoverRadius: 10,
+  //       pointHoverBackgroundColor: 'rgba(104,138,255,255)',
+  //       fill: true,
+  //       backgroundColor: 'rgba(104,138,255,255)',
+  //     }]
+  //   };
+  //   const chartDownloadData = {
+  //     labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
+  //     datasets: [{
+  //       label: 'Incoming Download Speed (in MBPS)',
+  //       data: speed.downloadSpeedInstance,
+  //       borderColor: 'rgba(104,138,255,255)',
+  //       borderWidth: 2, 
+  //       pointRadius: 5, 
+  //       pointHoverRadius: 10,
+  //       pointHoverBackgroundColor: 'rgba(104,138,255,255)',
+  //       fill: true,
+  //       backgroundColor: 'rgba(104,138,255,255)',
+  //     }]
+  //   };
+  //   const chartOptions = {
+  //     scales: {
+  //       x: {
+  //         type: 'category',
+  //         position: 'bottom',
+  //         grid: {
+  //           display: false,
+  //           color: '#FFFFF7',
+  //         },
           
-        },
-        y: {
-          type: 'linear',
-          position: 'left',
-          grid: {
-            display: false,
-            color: '#FFFFF7'
-          },
-        }
-      },
-      elements: {
-        line: {
-          tension: 0, 
-        }
-      },
-      plugins: {
-        legend: {
-          display: true,
-          labels: {
-            color: 'white',
-          }
-        }
-      },
-    };
+  //       },
+  //       y: {
+  //         type: 'linear',
+  //         position: 'left',
+  //         grid: {
+  //           display: false,
+  //           color: '#FFFFF7'
+  //         },
+  //       }
+  //     },
+  //     elements: {
+  //       line: {
+  //         tension: 0, 
+  //       }
+  //     },
+  //     plugins: {
+  //       legend: {
+  //         display: true,
+  //         labels: {
+  //           color: 'white',
+  //         }
+  //       }
+  //     },
+  //   };
 
-    const existingChart = new Chart(ctx, {
-      type: 'line',
-      data: chartUploadData,
-      options: chartOptions
-    });
-    const existingChart2 = new Chart(dsc, {
-      type: 'line',
-      data: chartDownloadData,
-      options: chartOptions
-    });
-    //clean up
-    return () => {
-      existingChart.destroy();
-      existingChart2.destroy();
-    };
-  }, []);
+  //   const existingChart = new Chart(ctx, {
+  //     type: 'line',
+  //     data: chartUploadData,
+  //     options: chartOptions
+  //   });
+  //   const existingChart2 = new Chart(dsc, {
+  //     type: 'line',
+  //     data: chartDownloadData,
+  //     options: chartOptions
+  //   });
+  //   //clean up
+  //   return () => {
+  //     existingChart.destroy();
+  //     existingChart2.destroy();
+  //   };
+  // }, []);
+
+  // ...
+  let existingChart;
+  let existingChart2;
+
+useEffect(() => {   
+  const ctx = document.getElementById('uploadChart').getContext('2d');
+  const dsc = document.getElementById('downloadChart').getContext('2d');
+  const chartUploadData = {
+    labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
+    datasets: [{
+      label: 'Incoming Upload Speed (in MBPS)',
+      data: speed.uploadSpeedInstance,
+      borderColor: 'rgba(104,138,255,255)',
+      borderWidth: 2, 
+      pointRadius: 5, 
+      pointHoverRadius: 10,
+      pointHoverBackgroundColor: 'rgba(104,138,255,255)',
+      fill: true,
+      backgroundColor: 'rgba(104,138,255,255)',
+    }]
+  };
+  const chartDownloadData = {
+    labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
+    datasets: [{
+      label: 'Incoming Download Speed (in MBPS)',
+      data: speed.downloadSpeedInstance,
+      borderColor: 'rgba(104,138,255,255)',
+      borderWidth: 2, 
+      pointRadius: 5, 
+      pointHoverRadius: 10,
+      pointHoverBackgroundColor: 'rgba(104,138,255,255)',
+      fill: true,
+      backgroundColor: 'rgba(104,138,255,255)',
+    }]
+  };
+  const chartOptions = {
+    scales: {
+      x: {
+        type: 'category',
+        position: 'bottom',
+        grid: {
+          display: false,
+          color: '#FFFFF7',
+        },
+        
+      },
+      y: {
+        type: 'linear',
+        position: 'left',
+        grid: {
+          display: false,
+          color: '#FFFFF7'
+        },
+      }
+    },
+    elements: {
+      line: {
+        tension: 0, 
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: 'white',
+        }
+      }
+    },
+  };
+
+  // Destroy existing charts
+  if (existingChart) {
+    existingChart.destroy();
+  }
+  if (existingChart2) {
+    existingChart2.destroy();
+  }
+
+  // Create new Chart instances
+  existingChart = new Chart(ctx, {
+    type: 'line',
+    data: chartUploadData,
+    options: chartOptions
+  });
+  existingChart2 = new Chart(dsc, {
+    type: 'line',
+    data: chartDownloadData,
+    options: chartOptions
+  });
+
+  // Clean up
+  return () => {
+    existingChart.destroy();
+    existingChart2.destroy();
+  };
+}, [speed]); // Run whenever the speed state changes
+
+// ...
+
 
   
 
