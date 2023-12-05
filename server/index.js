@@ -11,6 +11,7 @@ const ping=require('ping');
 
 const app = new Express();
 
+app.use(cors());
 
 const deviceIp=ip.address();
 //console.log(deviceIp);
@@ -41,28 +42,76 @@ async function getNetworkUploadSpeed() {
   }
 
 const PORT=8001;
+const uploadSpeedInstance = [];
+const downloadSpeedInstance = [];
 
-app.get('/speed',async (req,res)=>{
+// get last 5 speed instances for the graphs
+async function getLastTenSpeedInstance() {
+  let i = 0;
+
+  return new Promise((resolve) => {
+    const interval = setInterval(async () => {
+      if (i === 5) {
+        console.log(uploadSpeedInstance);
+        console.log(downloadSpeedInstance);
+        clearInterval(interval);
+        resolve(); // Resolve the promise after 5 iterations
+      } else {
+        try {
+          const uploadSpeedPromise = getNetworkUploadSpeed();
+          const downloadSpeedPromise = getNetworkDownloadSpeed();
+
+          const uploadSpeedResult = await uploadSpeedPromise;
+          const downloadSpeedResult = await downloadSpeedPromise;
+
+          uploadSpeedInstance.push(uploadSpeedResult.mbps);
+          downloadSpeedInstance.push(downloadSpeedResult.mbps);
+
+          i++;
+        } catch (error) {
+          console.error('Error fetching speed:', error);
+        }
+      }
+    }, 1000);
+  });
+}
+
+
+
+app.get('/speed', async (req, res) => {
   try {
+    await getLastTenSpeedInstance();
     const [uploadSpeed, downloadSpeed] = await Promise.all([
       getNetworkUploadSpeed(),
       getNetworkDownloadSpeed(),
     ]);
+
     const speed = {
-      uploadSpeed: uploadSpeed,
-      downloadSpeed: downloadSpeed,
+      uploadSpeed: uploadSpeed.mbps,
+      downloadSpeed: downloadSpeed.mbps,
       sessionData: 550,
       nearestServer: 'Kolkata, India',
       currentISP: 'Bharti Airtel',
       sessionStatus: 'Inactive',
-    } 
+      uploadSpeedInstance,
+      downloadSpeedInstance,
+    };
+
     console.log(speed);
     res.json(speed);
-} catch (err) {
-    console.log(err);
-}
-}
-);
+  } catch (err) {
+    if (err.code === 'ECONNRESET') {
+      console.error('Connection reset by peer');
+      // Handle or log the error as needed
+      res.status(500).json({ error: 'Connection reset by peer' });
+    } else {
+      console.log(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+});
+
+
 
 
 app.listen(PORT,()=>{

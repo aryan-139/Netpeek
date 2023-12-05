@@ -3,13 +3,16 @@ import { Box, Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import SessionGrid from './charts/sessionGrid';
+import speedContext from '../context/speedContext';
 
 import Chart from 'chart.js/auto';
+import axiosApi from '../utils/axiosApi';
 
 const Dashboard = () => {
 
   const uploadData = [1.3, 19.5, 0, 5.9, 2];
   const downloadData = [100.2, 65.3,120.0, 45.9, 92.8];
+  const { setSpeed, speed } = React.useContext(speedContext);
   //temporary
   const totalPageHits=124;
   const[counter, setCounter]=React.useState(0);
@@ -25,31 +28,36 @@ const Dashboard = () => {
 
   //test
   const makeSpeedRequest = async () => {
-    setProgress(true);
     try {
-      const response = { data: { uploadSpeed: 50, downloadSpeed: 100 } };
-      console.log(response.data);
-      setProgress(false);
-    } catch (err) {
-      console.log(err);
-      setProgress(false);
+      const response = await fetch('http://localhost:8001/speed');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const speedData = await response.json();
+      setSpeed(speedData);
+      console.log('Speed data:', speedData);
+      
+      // Now you can do something with the speed data, like updating your state or UI.
+    } catch (error) {
+      console.error('Error making speed request:', error);
     }
-  }
+  };
+  
     
 
   
   
 
-  useEffect(() => {
-    // Chart initialization
-   
+  useEffect(() => {   
     const ctx = document.getElementById('uploadChart').getContext('2d');
     const dsc=document.getElementById('downloadChart').getContext('2d');
     const chartUploadData = {
       labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
       datasets: [{
         label: 'Incoming Upload Speed (in MBPS)',
-        data: uploadData,
+        data: speed.uploadSpeedInstance,
         borderColor: 'rgba(104,138,255,255)',
         borderWidth: 2, 
         pointRadius: 5, 
@@ -63,7 +71,7 @@ const Dashboard = () => {
       labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
       datasets: [{
         label: 'Incoming Download Speed (in MBPS)',
-        data: downloadData,
+        data: speed.downloadSpeedInstance,
         borderColor: 'rgba(104,138,255,255)',
         borderWidth: 2, 
         pointRadius: 5, 
@@ -124,6 +132,8 @@ const Dashboard = () => {
       existingChart2.destroy();
     };
   }, []);
+
+  
 
   return (
     <Box sx={{ flex: 1, height: '100vh', backgroundColor: 'black', fontFamily: 'Inter' }}>

@@ -10,6 +10,8 @@ const SpeedProvider = ({ children }) => {
     nearestServer: 'Kolkata, India',
     currentISP: 'Bharti Airtel',
     sessionStatus: 'Inactive',
+    uploadSpeedInstance: [],
+    downloadSpeedInstance: [],
   });
 
   return (
