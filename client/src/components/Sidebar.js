@@ -2,20 +2,23 @@
 import React from 'react';
 import { Box, Icon, Typography, Card, CardContent, Button } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
+import speedContext from '../context/speedContext';
+import speedApi from '../api/speedApi';
 
 
 const Sidebar = () => {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     //use this to make it mobile responsive
+    const { speed } = React.useContext(speedContext);
 
     const cardsData=[
-    { title: 'Upload Speed', content: '5.2 MBPS' },
-    { title: 'Download Speed', content: '104.7 MBPS' },
-    { title: 'Session Data', content: '450.7 MB' },
-    { title: 'Nearest Server', content: 'Kolkata, India' },
-    { title: 'Current ISP Provider', content: 'Bharti Airtel' },
-    {title: 'Session Status', content:'Inactive'},
+    { title: 'Upload Speed', content: speed.uploadSpeed},
+    { title: 'Download Speed', content: speed.downloadSpeed },
+    { title: 'Session Data', content: speed.sessionData},
+    { title: 'Nearest Server', content: speed.nearestServer },
+    { title: 'Current ISP Provider', content: speed.currentISP },
+    {title: 'Session Status', content: speed.sessionStatus},
     ]
 
   return (
