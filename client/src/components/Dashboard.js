@@ -22,16 +22,20 @@ const Dashboard = () => {
     setCounter((prevCounter) => prevCounter + 1);
     localStorage.setItem('pageCounter', counter.toString());
   }, []); 
-    
-  async function makeSpeedRequest() {
-    const speed = 50;
-   setInterval(() => {
-    progress=false;
-    speed++;
-   }, 8000);
 
-    console.log(speed);
+  //test
+  const makeSpeedRequest = async () => {
+    setProgress(true);
+    try {
+      const response = { data: { uploadSpeed: 50, downloadSpeed: 100 } };
+      console.log(response.data);
+      setProgress(false);
+    } catch (err) {
+      console.log(err);
+      setProgress(false);
+    }
   }
+    
 
   
   
