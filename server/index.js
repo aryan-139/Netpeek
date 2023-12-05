@@ -13,7 +13,7 @@ const app = new Express();
 
 
 const deviceIp=ip.address();
-console.log(deviceIp);
+//console.log(deviceIp);
 const testNetworkSpeed = new NetworkSpeed();
 
 getNetworkDownloadSpeed();
@@ -21,7 +21,7 @@ async function getNetworkDownloadSpeed() {
     const baseUrl = 'https://eu.httpbin.org/stream-bytes/500000';
     const fileSizeInBytes = 500000;
     const speed = await testNetworkSpeed.checkDownloadSpeed(baseUrl, fileSizeInBytes);
-    console.log(speed);
+    return speed;
 }
 getNetworkUploadSpeed();
 
@@ -37,10 +37,33 @@ async function getNetworkUploadSpeed() {
     };
     const fileSizeInBytes = 2000000
     const speed = await testNetworkSpeed.checkUploadSpeed(options, fileSizeInBytes);
-    console.log(speed);
+    return speed;
   }
 
 const PORT=8001;
+
+app.get('/speed',async (req,res)=>{
+  try {
+    const [uploadSpeed, downloadSpeed] = await Promise.all([
+      getNetworkUploadSpeed(),
+      getNetworkDownloadSpeed(),
+    ]);
+    const speed = {
+      uploadSpeed: uploadSpeed,
+      downloadSpeed: downloadSpeed,
+      sessionData: 550,
+      nearestServer: 'Kolkata, India',
+      currentISP: 'Bharti Airtel',
+      sessionStatus: 'Inactive',
+    } 
+    console.log(speed);
+    res.json(speed);
+} catch (err) {
+    console.log(err);
+}
+}
+);
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
