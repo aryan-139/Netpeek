@@ -13,10 +13,10 @@ const Dashboard = () => {
   const uploadData = [1.3, 19.5, 0, 5.9, 2];
   const downloadData = [100.2, 65.3,120.0, 45.9, 92.8];
   const { setSpeed, speed } = React.useContext(speedContext);
+  const [loading, setLoading] = React.useState(true);
   //temporary
   const totalPageHits=124;
   const[counter, setCounter]=React.useState(0);
-  const[progress, setProgress]=React.useState(true);
   useEffect(() => {
     const storedCounter = localStorage.getItem('pageCounter');
     if (storedCounter) {
@@ -29,12 +29,15 @@ const Dashboard = () => {
   //test
   const makeSpeedRequest = async () => {
     try {
+      setLoading(true);
       const response = await fetch('http://localhost:8001/speed');
       
+      
       if (!response.ok) {
+        setLoading(false);
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+      setLoading(false);
       const speedData = await response.json();
       setSpeed(speedData);
       console.log('Speed data:', speedData);
@@ -44,96 +47,10 @@ const Dashboard = () => {
       console.error('Error making speed request:', error);
     }
   };
-  
-    
+
+
 
   
-  
-
-  // useEffect(() => {   
-  //   const ctx = document.getElementById('uploadChart').getContext('2d');
-  //   const dsc=document.getElementById('downloadChart').getContext('2d');
-  //   const chartUploadData = {
-  //     labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
-  //     datasets: [{
-  //       label: 'Incoming Upload Speed (in MBPS)',
-  //       data: speed.uploadSpeedInstance,
-  //       borderColor: 'rgba(104,138,255,255)',
-  //       borderWidth: 2, 
-  //       pointRadius: 5, 
-  //       pointHoverRadius: 10,
-  //       pointHoverBackgroundColor: 'rgba(104,138,255,255)',
-  //       fill: true,
-  //       backgroundColor: 'rgba(104,138,255,255)',
-  //     }]
-  //   };
-  //   const chartDownloadData = {
-  //     labels: ['Instance 1', 'Instance 2', 'Instance 3', 'Instance 4', 'Instance 5'],
-  //     datasets: [{
-  //       label: 'Incoming Download Speed (in MBPS)',
-  //       data: speed.downloadSpeedInstance,
-  //       borderColor: 'rgba(104,138,255,255)',
-  //       borderWidth: 2, 
-  //       pointRadius: 5, 
-  //       pointHoverRadius: 10,
-  //       pointHoverBackgroundColor: 'rgba(104,138,255,255)',
-  //       fill: true,
-  //       backgroundColor: 'rgba(104,138,255,255)',
-  //     }]
-  //   };
-  //   const chartOptions = {
-  //     scales: {
-  //       x: {
-  //         type: 'category',
-  //         position: 'bottom',
-  //         grid: {
-  //           display: false,
-  //           color: '#FFFFF7',
-  //         },
-          
-  //       },
-  //       y: {
-  //         type: 'linear',
-  //         position: 'left',
-  //         grid: {
-  //           display: false,
-  //           color: '#FFFFF7'
-  //         },
-  //       }
-  //     },
-  //     elements: {
-  //       line: {
-  //         tension: 0, 
-  //       }
-  //     },
-  //     plugins: {
-  //       legend: {
-  //         display: true,
-  //         labels: {
-  //           color: 'white',
-  //         }
-  //       }
-  //     },
-  //   };
-
-  //   const existingChart = new Chart(ctx, {
-  //     type: 'line',
-  //     data: chartUploadData,
-  //     options: chartOptions
-  //   });
-  //   const existingChart2 = new Chart(dsc, {
-  //     type: 'line',
-  //     data: chartDownloadData,
-  //     options: chartOptions
-  //   });
-  //   //clean up
-  //   return () => {
-  //     existingChart.destroy();
-  //     existingChart2.destroy();
-  //   };
-  // }, []);
-
-  // ...
   let existingChart;
   let existingChart2;
 
@@ -249,7 +166,7 @@ useEffect(() => {
           Total Page Hits: {counter}
         </Typography>
       </Box>
-
+      {loading && <LinearProgress />}
       <Box sx={{ color: "white" }}>
         <Box sx={{padding:"2%", display:"flex", gap:"2%"}}>
           <Typography>

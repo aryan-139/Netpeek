@@ -64,6 +64,14 @@ async function getLastTenSpeedInstance() {
           const uploadSpeedResult = await uploadSpeedPromise;
           const downloadSpeedResult = await downloadSpeedPromise;
 
+          if (uploadSpeedInstance.length >= 5) {
+            uploadSpeedInstance.shift(); 
+          }
+          if (downloadSpeedInstance.length >= 5) {
+            downloadSpeedInstance.shift(); 
+          }
+
+
           uploadSpeedInstance.push(uploadSpeedResult.mbps);
           downloadSpeedInstance.push(downloadSpeedResult.mbps);
 
@@ -79,6 +87,7 @@ async function getLastTenSpeedInstance() {
 
 
 app.get('/speed', async (req, res) => {
+  console.log('Speed request received');
   try {
     await getLastTenSpeedInstance();
     const [uploadSpeed, downloadSpeed] = await Promise.all([
