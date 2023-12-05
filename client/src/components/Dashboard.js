@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import LinearProgress from '@mui/material/LinearProgress';
 import SessionGrid from './charts/sessionGrid';
 
 import Chart from 'chart.js/auto';
@@ -9,11 +10,35 @@ const Dashboard = () => {
 
   const uploadData = [1.3, 19.5, 0, 5.9, 2];
   const downloadData = [100.2, 65.3,120.0, 45.9, 92.8];
+  //temporary
+  const totalPageHits=124;
+  const[counter, setCounter]=React.useState(0);
+  const[progress, setProgress]=React.useState(true);
+  useEffect(() => {
+    const storedCounter = localStorage.getItem('pageCounter');
+    if (storedCounter) {
+      setCounter(parseInt(storedCounter, 10));
+    }
+    setCounter((prevCounter) => prevCounter + 1);
+    localStorage.setItem('pageCounter', counter.toString());
+  }, []); 
+    
+  async function makeSpeedRequest() {
+    const speed = 50;
+   setInterval(() => {
+    progress=false;
+    speed++;
+   }, 8000);
 
+    console.log(speed);
+  }
+
+  
   
 
   useEffect(() => {
     // Chart initialization
+   
     const ctx = document.getElementById('uploadChart').getContext('2d');
     const dsc=document.getElementById('downloadChart').getContext('2d');
     const chartUploadData = {
@@ -98,16 +123,37 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ flex: 1, height: '100vh', backgroundColor: 'black', fontFamily: 'Inter' }}>
+      <Box sx={{ width: '100%' }}>
+     
+    </Box>
       <Box sx={{ marginTop: "0.5%", justifyContent: "left", marginLeft: "2%", marginTop: "1%", display: "flex" }}>
         <Typography variant="h7" component="h2" gutterBottom sx={{ textDecoration: "underline" }}>
           Dashboard
         </Typography>
+
+        <Typography variant="h7" component="h2" gutterBottom sx={{ marginLeft:"70%" }}>
+          Total Page Hits: {counter}
+        </Typography>
       </Box>
 
       <Box sx={{ color: "white" }}>
-        <Typography variant="h3" component="h2" gutterBottom sx={{ marginLeft: "2%", marginTop: "2%" }}>
-          Hi, Aryan,
-        </Typography>
+        <Box sx={{padding:"2%", display:"flex", gap:"2%"}}>
+          <Typography>
+          Hello, User! Hit the test button to check your internet speed.
+          </Typography>
+          <Button variant="outlined" color="primary" onClick={makeSpeedRequest}>
+            Test Internet Speed
+          </Button>
+
+          <Button variant="outlined" color="error">
+            Start a New Session
+          </Button>
+
+          <Button variant="outlined">
+            End Session
+          </Button>
+        </Box>
+       
         <Typography variant="h4" component="h2" gutterBottom sx={{ marginLeft: "2%" }}>
           Have an awesome day!
         </Typography>
