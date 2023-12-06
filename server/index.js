@@ -3,13 +3,14 @@ const Express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { getNetworkDownloadSpeed, getNetworkUploadSpeed } = require('./routes/networkSpeed');
-const { uploadSpeedInstance, downloadSpeedInstance, updateSpeedInstances } = require('./routes/speedInstance');
+const { uploadSpeedInstance, downloadSpeedInstance, updateSpeedInstances} = require('./routes/speedInstance');
 
 const app = new Express();
 
 app.use(cors());
 
 const PORT = 8001;
+
 
 async function getLastTenSpeedInstance() {
     let i = 0;
@@ -45,6 +46,9 @@ app.get('/speed', async (req, res) => {
         await getLastTenSpeedInstance();
         const [uploadSpeed, downloadSpeed] = await Promise.all([getNetworkUploadSpeed(), getNetworkDownloadSpeed()]);
 
+        const meanUploadSpeed = uploadSpeedInstance.reduce((a, b) => a + b, 0) / uploadSpeedInstance.length;
+        const meanDownloadSpeed = downloadSpeedInstance.reduce((a, b) => a + b, 0) / downloadSpeedInstance.length;
+
         const speed = {
             uploadSpeed: uploadSpeed.mbps,
             downloadSpeed: downloadSpeed.mbps,
@@ -54,14 +58,16 @@ app.get('/speed', async (req, res) => {
             sessionStatus: 'Inactive',
             uploadSpeedInstance,
             downloadSpeedInstance,
+            meanUploadSpeed,
+            meanDownloadSpeed,
         };
 
         console.log(speed);
         res.json(speed);
     } catch (err) {
-        if (err.code === 'ECONNRESET') {
-            console.error('Connection reset by peer');
-            res.status(500).json({ error: 'Connection reset by peer' });
+        if (err.code === 'ECONNRESET' || err.code === 'ENOTFOUND') {
+            //console.error('Connection reset by peer');
+            res.status(500).json({ error: 'bad connection' });
         } else {
             console.log(err);
             res.status(500).json({ error: 'Internal Server Error' });

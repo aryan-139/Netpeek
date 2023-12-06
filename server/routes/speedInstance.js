@@ -14,4 +14,7 @@ function updateSpeedInstances(uploadSpeed, downloadSpeed) {
     downloadSpeedInstance.push(downloadSpeed);
 }
 
+
+
+
 module.exports = { uploadSpeedInstance, downloadSpeedInstance, updateSpeedInstances };
