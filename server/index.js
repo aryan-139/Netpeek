@@ -1,5 +1,6 @@
 // app.js
 const Express = require('express');
+const os=require('os');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { getNetworkDownloadSpeed, getNetworkUploadSpeed } = require('./routes/networkSpeed');
@@ -8,9 +9,15 @@ const { uploadSpeedInstance, downloadSpeedInstance, updateSpeedInstances} = requ
 const app = new Express();
 
 app.use(cors());
-
+app.use(bodyParser.json());
 const PORT = 8001;
+const networkInterfaces = os.networkInterfaces();
 
+//server uptime 
+console.log(os.uptime());
+//console.log('CPU Usage:', os.cpus());
+console.log('Total Memory:', os.totalmem());
+console.log('Free Memory:', os.freemem());
 
 async function getLastTenSpeedInstance() {
     let i = 0;
@@ -55,7 +62,7 @@ app.get('/speed', async (req, res) => {
             sessionData: 550,
             nearestServer: 'Kolkata, India',
             currentISP: 'Bharti Airtel',
-            sessionStatus: 'Inactive',
+            sessionStatus: 'Active',
             uploadSpeedInstance,
             downloadSpeedInstance,
             meanUploadSpeed,

@@ -44,7 +44,7 @@ const SessionGrid = () => {
   ];
 
   return (
-    <Box sx={{ height: '100%', width: '120%' }}>
+    <Box sx={{ height: '400px', width: '600px' }}>
       <DataGrid
         rows={rows}
         columns={columns}
