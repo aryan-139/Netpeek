@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import SessionGrid from './charts/sessionGrid';
 import speedContext from '../context/speedContext';
+import SystemKpi from './charts/systemKpi';
 
 import Chart from 'chart.js/auto';
 import axiosApi from '../utils/axiosApi';
@@ -153,7 +154,7 @@ useEffect(() => {
   
 
   return (
-    <Box sx={{ flex: 1, height: '100vh', backgroundColor: 'black', fontFamily: 'Inter' }}>
+    <Box sx={{ flex: 1, backgroundColor: 'black', fontFamily: 'Inter' }}>
       <Box sx={{ width: '100%' }}>
      
     </Box>
@@ -189,9 +190,9 @@ useEffect(() => {
           Have an awesome day!
         </Typography>
 
-        <Box sx={{height:"20%", width:"40%", display:"flex", marginLeft:"1.7%",padding:"1%", gap:"4%"}}>
-        <canvas id="uploadChart" width="400" height="200"></canvas>
-        <canvas id="downloadChart" width="400" height="200"></canvas>
+        <Box sx={{height:"350px", width:"568px", display:"flex", marginLeft:"1.7%",padding:"1%", gap:"70px"}}>
+        <canvas id="uploadChart" width="650px" height="400px"></canvas>
+        <canvas id="downloadChart" width="650px" height="400px"></canvas>
         </Box>
 
          </Box>
@@ -199,7 +200,8 @@ useEffect(() => {
         {/**Datagrid */}
         <Box sx={{ marginLeft: "2%", marginTop: "2%", width: "40%", height: "40%", display:"flex", gap:"10%" }}>
           <SessionGrid />
-          <SessionGrid />
+          <SystemKpi/>
+          
         </Box>
 
         
